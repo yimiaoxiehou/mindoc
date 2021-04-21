@@ -3,7 +3,6 @@ package models
 import (
 	"time"
 
-	"github.com/astaxie/beego/logs"
 	"github.com/beego/i18n"
 
 	"fmt"
