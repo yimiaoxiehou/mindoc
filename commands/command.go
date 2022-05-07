@@ -11,6 +11,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	_ "time/tzdata"
 
 	"bytes"
 	"encoding/json"
@@ -109,6 +110,7 @@ func RegisterModel() {
 		new(models.TeamMember),
 		new(models.TeamRelationship),
 		new(models.Itemsets),
+		new(models.WorkWeixinAccount),
 	)
 	gob.Register(models.Blog{})
 	gob.Register(models.Document{})
