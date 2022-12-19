@@ -1,6 +1,6 @@
 on:
   release:
-    types: [created]
+    types: [published]
 
 jobs:
   release-linux-amd64:
@@ -34,4 +34,4 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: yimiaoxiehou/mindoc:latest
+          tags: yimiaoxiehou/${{ github.event.repository.name }}:${{ github.event.release.tag_name }}
