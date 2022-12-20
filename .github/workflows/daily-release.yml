@@ -13,12 +13,15 @@ jobs:
       Date: ${{ steps.date.outputs.date }}
   create-release:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
-    - uses: actions/checkout@v2
-    - uses: ncipollo/release-action@v1
+    - name: 创建GitHub Release
+      id: create_release
+      uses: actions/create-release@latest
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        artifacts: "release.tar.gz"
-        tag: ${{  needs.date.outputs.Date }}
-      
+        tag_name: ${{  needs.date.outputs.Date }}
+        release_name: ${{  needs.date.outputs.Date }}
+        body: Daily Release
+        draft: false
+        prerelease: false
