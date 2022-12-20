@@ -1,5 +1,5 @@
 
-name: Merge upstream branches
+name: Auto Follow Upstream
 on:
   schedule:
      # actually, ~5 minutes is the highest
