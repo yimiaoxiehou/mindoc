@@ -14,6 +14,8 @@ jobs:
   create-release:
     runs-on: ubuntu-latest
     steps:
+      - name: checkout
+        uses: actions/checkout@v2
       - name: Create Release
         id: create_release
         uses: nickatnight/releases-action@v3
