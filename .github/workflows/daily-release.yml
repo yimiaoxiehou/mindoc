@@ -1,0 +1,57 @@
+name: Daily Release
+on: [workflow_dispatch]
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Merge upstream
+        run: |
+          git config --global user.name 'yimiaoxiehou'
+          git remote add upstream https://github.com/mindoc-org/mindoc.git
+          git fetch upstream
+          git checkout master
+          git merge --no-edit upstream/master
+          git push origin master
+      - name: Check for changes # This blocks behaviour is just the opposite
+        run: |
+              if [[ -n git log --after="today" ]]; then
+                  echo "changes_exist=true" >> $GITHUB_ENV
+              else
+                  echo "changes_exist=false" >> $GITHUB_ENV
+              fi
+      - name: Get current date
+        if: env.changes_exist == 'true'
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+      - name: 创建GitHub Release
+        if: env.changes_exist == 'true'
+        id: create_release
+        uses: actions/create-release@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.date.outputs.date }}
+          release_name: ${{ steps.date.outputs.date }}
+          body: Daily Release
+          draft: false
+          prerelease: false
+      - name: Set up Go
+        if: env.changes_exist == 'true'
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.18.1
+      - name: Build
+        if: env.changes_exist == 'true'
+        run: go build -o ${{ github.event.repository.name }}-linux-amd64-${{ steps.date.outputs.date }}
+      - name: Upload Release Asset
+        if: env.changes_exist == 'true'
+        id: upload-release-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: ./${{ github.event.repository.name }}-linux-amd64-${{ steps.date.outputs.date }}
+          asset_name: ${{ github.event.repository.name }}-linux-amd64-${{ steps.date.outputs.date }}
