@@ -1,9 +1,5 @@
-name: Tag it with parameters
-
-on:
-  push:
-    tags:
-      - "*"
+name: Daily Release
+on: [workflow_dispatch]
 
 jobs:
   create-release:
