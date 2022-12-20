@@ -1,0 +1,27 @@
+name: Tag it with parameters
+
+on:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Create Release
+        id: create_release
+        uses: nickatnight/releases-action@v3
+        with:
+          branch: "master"
+          name: "Gryffindor Release"
+          message: "Yer a wizard Harry"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    outputs:
+      ReleaseTag: ${{ steps.create_release.outputs.release_tag }}
