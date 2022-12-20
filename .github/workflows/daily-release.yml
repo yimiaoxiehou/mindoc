@@ -9,19 +9,14 @@ jobs:
       - name: Get current date
         id: date
         run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
-    outputs:
-      Date: ${{ steps.date.outputs.date }}
-  create-release:
-    runs-on: ubuntu-latest
-    steps:
-    - name: 创建GitHub Release
-      id: create_release
-      uses: actions/create-release@latest
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{  needs.date.outputs.Date }}
-        release_name: ${{  needs.date.outputs.Date }}
-        body: Daily Release
-        draft: false
-        prerelease: false
+      - name: 创建GitHub Release
+        id: create_release
+        uses: actions/create-release@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.date.outputs.date }}
+          release_name: ${{ steps.date.outputs.date }}
+          body: Daily Release
+          draft: false
+          prerelease: false
